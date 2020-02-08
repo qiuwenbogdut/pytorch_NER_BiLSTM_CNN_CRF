@@ -125,6 +125,7 @@ def preprocessing(config):
     # read file
     data_loader = DataLoader(path=[config.train_file, config.dev_file, config.test_file], shuffle=True, config=config)
     train_data, dev_data, test_data = data_loader.dataLoader()
+
     print("train sentence {}, dev sentence {}, test sentence {}.".format(len(train_data), len(dev_data), len(test_data)))
     data_dict = {"train_data": train_data, "dev_data": dev_data, "test_data": test_data}
     if config.save_pkl:
@@ -213,8 +214,14 @@ def load_data(config):
         print("process data")
         if os.path.exists(config.pkl_directory): shutil.rmtree(config.pkl_directory)
         if not os.path.isdir(config.pkl_directory): os.makedirs(config.pkl_directory)
+
+        # 生成训练集，验证集，测试集合，embedding参数
+        #todo 该部分如何使用torchtext替换掉
         train_iter, dev_iter, test_iter, alphabet = preprocessing(config)
         config.pretrained_weight = pre_embed(config=config, alphabet=alphabet)
+
+
+
     elif ((config.train is True) and (config.process is False)) or (config.test is True):
         print("load data from pkl file")
         # load alphabet from pkl
